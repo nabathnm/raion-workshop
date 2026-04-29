@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:level_1/detail_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool fav1 = false;
+  bool fav2 = false;
+  bool fav3 = false;
+  bool fav4 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +88,27 @@ class HomePage extends StatelessWidget {
                     title: 'Berries',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card1.png',
+                    star: '4.6',
+                    rating: '456',
+                    isFavorite: fav1,
+                    onToggleFavorite: () {
+                      setState(() {
+                        fav1 = !fav1;
+                      });
+                    },
                   ),
                   ProductCard(
                     title: 'Tulsi',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card2.png',
+                    star: '4.6',
+                    rating: '456',
+                    isFavorite: fav2,
+                    onToggleFavorite: () {
+                      setState(() {
+                        fav2 = !fav2;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -93,11 +120,27 @@ class HomePage extends StatelessWidget {
                     title: 'Milk',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card3.png',
+                    star: '4.6',
+                    isFavorite: fav3,
+                    rating: '456',
+                    onToggleFavorite: () {
+                      setState(() {
+                        fav3 = !fav3;
+                      });
+                    },
                   ),
                   ProductCard(
                     title: 'Tomato',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card4.png',
+                    star: '4.6',
+                    isFavorite: fav4,
+                    rating: '456',
+                    onToggleFavorite: () {
+                      setState(() {
+                        fav4 = !fav4;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -138,75 +181,101 @@ class ProductCard extends StatelessWidget {
   final String title;
   final String description;
   final String image;
+  final String star;
+  final String rating;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
 
   const ProductCard({
     super.key,
     required this.title,
     required this.description,
     required this.image,
+    required this.star,
+    required this.rating,
+    required this.isFavorite,
+    required this.onToggleFavorite,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 165,
-                height: 165,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/$image'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailPage(
+                title: title,
+                description: description,
+                image: image,
+                star: star,
+                rating: rating,
+                isFavorite: isFavorite,
+                onToggleFavorite: onToggleFavorite,
               ),
-
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: () {
-                    // nanti toggle di sini
-                  },
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.favorite_border,
-                      color: Colors.red,
-                      size: 18,
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: 165,
+                  height: 165,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/$image'),
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(title, style: TextStyle(fontWeight: .w700, fontSize: 20)),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(Icons.star, color: Colors.amber),
-              Text("4.6"),
-              Text("(673)"),
-            ],
-          ),
-          Text(
-            description,
-            style: TextStyle(
-              fontWeight: .w600,
-              fontSize: 14,
-              color: Color(0xffD9D9D9),
+
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: GestureDetector(
+                    onTap: onToggleFavorite,
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+            ),
+
+            Row(
+              children: [
+                Icon(Icons.star, color: Colors.amber),
+                Text(star),
+                Text('($rating)'),
+              ],
+            ),
+
+            Text(
+              description,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Color(0xff939393),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
