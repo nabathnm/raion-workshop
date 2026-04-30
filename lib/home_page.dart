@@ -26,7 +26,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 'Explore',
-                style: TextStyle(fontWeight: .w700, fontSize: 24),
+                style: TextStyle(
+                  fontWeight: .w700,
+                  fontSize: 24,
+                  color: Color(0xff007E2F),
+                ),
               ),
               TextField(
                 decoration: InputDecoration(
