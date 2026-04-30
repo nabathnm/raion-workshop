@@ -241,10 +241,10 @@ class ProductCard extends StatelessWidget {
                     onTap: onToggleFavorite,
                     child: CircleAvatar(
                       radius: 16,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.white.withOpacity(0.65),
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
+                        color: isFavorite ? Colors.red : Colors.white,
                         size: 18,
                       ),
                     ),
@@ -261,8 +261,18 @@ class ProductCard extends StatelessWidget {
             Row(
               children: [
                 Icon(Icons.star, color: Colors.amber),
-                Text(star),
-                Text('($rating)'),
+                Text(
+                  star,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  '($rating)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff939393),
+                  ),
+                ),
               ],
             ),
 

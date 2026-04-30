@@ -63,7 +63,7 @@ class _DetailPageState extends State<DetailPage> {
                   },
                   child: CircleAvatar(
                     radius: 24,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.white.withOpacity(0.65),
                     child: Icon(
                       Icons.arrow_back,
                       size: 20,
@@ -76,15 +76,18 @@ class _DetailPageState extends State<DetailPage> {
                 top: 12,
                 right: 12,
                 child: GestureDetector(
-                  onTap: widget.onToggleFavorite,
+                  onTap: () {
+                    setState(() {
+                      favorite = !favorite;
+                    });
+                    widget.onToggleFavorite();
+                  },
                   child: CircleAvatar(
                     radius: 24,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.white.withOpacity(0.65),
                     child: Icon(
-                      widget.isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: Colors.red,
+                      favorite ? Icons.favorite : Icons.favorite_border,
+                      color: favorite ? Colors.red : Colors.white,
                       size: 20,
                     ),
                   ),
@@ -110,8 +113,21 @@ class _DetailPageState extends State<DetailPage> {
                     Row(
                       children: [
                         Icon(Icons.star, color: Colors.amber),
-                        Text(widget.star),
-                        Text('(${widget.rating})'),
+                        Text(
+                          widget.star,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '(${widget.rating})',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xff939393),
+                          ),
+                        ),
                       ],
                     ),
                   ],
