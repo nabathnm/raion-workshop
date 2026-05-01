@@ -92,8 +92,8 @@ class _HomePageState extends State<HomePage> {
                     title: 'Berries',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card1.png',
-                    star: '4.6',
-                    rating: '456',
+                    star: '4.5',
+                    rating: '672',
                     isFavorite: fav1,
                     onToggleFavorite: () {
                       setState(() {
@@ -105,8 +105,8 @@ class _HomePageState extends State<HomePage> {
                     title: 'Tulsi',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card2.png',
-                    star: '4.6',
-                    rating: '456',
+                    star: '4.9',
+                    rating: '324',
                     isFavorite: fav2,
                     onToggleFavorite: () {
                       setState(() {
@@ -124,9 +124,9 @@ class _HomePageState extends State<HomePage> {
                     title: 'Milk',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card3.png',
-                    star: '4.6',
+                    star: '4.5',
                     isFavorite: fav3,
-                    rating: '456',
+                    rating: '672',
                     onToggleFavorite: () {
                       setState(() {
                         fav3 = !fav3;
@@ -137,9 +137,9 @@ class _HomePageState extends State<HomePage> {
                     title: 'Tomato',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',
                     image: 'card4.png',
-                    star: '4.6',
+                    star: '4.9',
+                    rating: '324',
                     isFavorite: fav4,
-                    rating: '456',
                     onToggleFavorite: () {
                       setState(() {
                         fav4 = !fav4;
