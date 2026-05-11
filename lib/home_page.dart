@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:level_1/detail_page.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,15 +52,7 @@ class _HomePageState extends State<HomePage> {
               ),
 
               Container(
-                width: .infinity,
-                height: 160,
-                decoration: BoxDecoration(
-                  borderRadius: .circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/gambar1.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                child: BannerCarousel(),
               ),
 
               Text(
@@ -291,6 +284,43 @@ class ProductCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class BannerCarousel extends StatelessWidget {
+  BannerCarousel({super.key});
+
+  final List<String> banners = [
+    'gambar1.png',
+    'gambar1.png',
+    'gambar1.png',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 160,
+        viewportFraction: 1,
+      ),
+      items: banners.map((image) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Image.asset(
+                'assets/images/$image',
+                fit: BoxFit.cover,
+              ),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 }
