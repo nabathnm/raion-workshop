@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:level_1/detail_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:level_1/widgets/banner_caraousel.dart';
+import 'package:level_1/widgets/category_card.dart';
+import 'package:level_1/widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,9 +52,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              Container(
-                child: BannerCarousel(),
-              ),
+              Container(child: BannerCarousel()),
 
               Text(
                 'Categories',
@@ -145,182 +144,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final String title;
-  final String image;
-  const CategoryCard({super.key, required this.title, required this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: .all(4),
-      height: 56,
-      decoration: BoxDecoration(
-        color: Color(0xffDFF1E6),
-        borderRadius: .circular(50),
-      ),
-      child: Row(
-        spacing: 8,
-        children: [
-          CircleAvatar(backgroundImage: AssetImage('assets/images/$image')),
-          Padding(padding: .only(right: 20), child: Text(title)),
-        ],
-      ),
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final String image;
-  final String star;
-  final String rating;
-  final bool isFavorite;
-  final VoidCallback onToggleFavorite;
-
-  const ProductCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.image,
-    required this.star,
-    required this.rating,
-    required this.isFavorite,
-    required this.onToggleFavorite,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailPage(
-                title: title,
-                description: description,
-                image: image,
-                star: star,
-                rating: rating,
-                isFavorite: isFavorite,
-                onToggleFavorite: onToggleFavorite,
-              ),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: 165,
-                  height: 165,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/$image'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: onToggleFavorite,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white.withOpacity(0.65),
-                      child: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Text(
-              title,
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-            ),
-
-            Row(
-              children: [
-                Icon(Icons.star, color: Colors.amber),
-                Text(
-                  star,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  '($rating)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff939393),
-                  ),
-                ),
-              ],
-            ),
-
-            Text(
-              description,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: Color(0xff939393),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BannerCarousel extends StatelessWidget {
-  BannerCarousel({super.key});
-
-  final List<String> banners = [
-    'gambar1.png',
-    'gambar1.png',
-    'gambar1.png',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 160,
-        viewportFraction: 1,
-      ),
-      items: banners.map((image) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Image.asset(
-                'assets/images/$image',
-                fit: BoxFit.cover,
-              ),
-            );
-          },
-        );
-      }).toList(),
     );
   }
 }
