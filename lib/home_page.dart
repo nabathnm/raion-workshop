@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
 import 'package:level_1/features/cart/cart_state.dart';
+import 'package:level_1/features/favorites/favorite_bloc.dart';
+import 'package:level_1/features/favorites/favorite_state.dart';
 import 'package:level_1/widgets/banner_caraousel.dart';
 import 'package:level_1/widgets/category_card.dart';
 import 'package:level_1/widgets/product_card.dart';
+import 'package:level_1/widgets/search_product_bar.dart';
 import 'package:level_1/widgets/statistic_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,33 +41,21 @@ class _HomePageState extends State<HomePage> {
                   color: Color(0xff007E2F),
                 ),
               ),
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Search..',
-                  fillColor: Colors.white,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(999),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(999),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                ),
-              ),
+              SearchProductBar(),
               BannerCarousel(),
-
               Row(
                 spacing: 12,
                 children: [
-                  StatisticCard(
-                    color: Colors.red.shade400,
-                    title: "Favorites",
-                    value: "12",
+                  BlocBuilder<FavoriteBloc, FavoriteState>(
+                    builder: (context, state) {
+                      return StatisticCard(
+                        color: Colors.red.shade400,
+                        title: "Favorites",
+                        value: state.totalItems.toString(),
+                      );
+                    },
                   ),
+
                   BlocBuilder<CartBloc, CartState>(
                     builder: (context, state) {
                       return StatisticCard(
@@ -107,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 0.65,
+                  childAspectRatio: 0.53,
                 ),
                 children: [
                   ProductCard(

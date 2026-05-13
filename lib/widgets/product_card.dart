@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/detail_page.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
 import 'package:level_1/features/cart/cart_event.dart';
+import 'package:level_1/features/favorites/favorite_bloc.dart';
+import 'package:level_1/features/favorites/favorite_events.dart';
+import 'package:level_1/widgets/product_cart_button.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
@@ -26,112 +29,114 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailPage(
-                title: title,
-                description: description,
-                image: image,
-                star: star,
-                rating: rating,
-                isFavorite: isFavorite,
-                onToggleFavorite: onToggleFavorite,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailPage(
+              title: title,
+              description: description,
+              image: image,
+              star: star,
+              rating: rating,
+              isFavorite: isFavorite,
+              onToggleFavorite: onToggleFavorite,
+            ),
+          ),
+        );
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 165,
+                height: 165,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/$image'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: 165,
-                  height: 165,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/$image'),
-                      fit: BoxFit.cover,
+
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: () {
+                    onToggleFavorite();
+                    context.read<FavoriteBloc>().add(addToFavorite());
+                  },
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.white.withOpacity(0.65),
+                    child: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : Colors.white,
+                      size: 18,
                     ),
                   ),
                 ),
-
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: onToggleFavorite,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white.withOpacity(0.65),
-                      child: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  top: 8,
-                  right: 44,
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<CartBloc>().add(AddToCart());
-                    },
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white.withOpacity(0.65),
-                      child: Icon(
-                        Icons.shopping_bag,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Text(
-              title,
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-            ),
-
-            Row(
-              children: [
-                Icon(Icons.star, color: Colors.amber),
-                Text(
-                  star,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  '($rating)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff939393),
-                  ),
-                ),
-              ],
-            ),
-
-            Text(
-              description,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: Color(0xff939393),
               ),
+            ],
+          ),
+
+          SizedBox(height: 4),
+          Row(
+            spacing: 4,
+            children: [
+              ProductCartButton(
+                color: Colors.red.shade400,
+                name: "Remove",
+                action: () {
+                  context.read<CartBloc>().add(RemoveFromCart());
+                },
+              ),
+              ProductCartButton(
+                color: Colors.blue.shade400,
+                name: "Add Cart",
+                action: () {
+                  context.read<CartBloc>().add(AddToCart());
+                },
+              ),
+            ],
+          ),
+          Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+          ),
+
+          Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber),
+              Text(
+                star,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                '($rating)',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff939393),
+                ),
+              ),
+            ],
+          ),
+
+          Text(
+            description,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: Color(0xff939393),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

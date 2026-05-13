@@ -7,5 +7,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<AddToCart>((event, emit) {
       emit(CartState(state.totalItems + 1));
     });
+    on<RemoveFromCart>((event, emit) {
+      emit(CartState(state.totalItems - 1));
+    });
   }
 }

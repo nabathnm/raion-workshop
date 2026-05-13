@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:level_1/features/favorites/favorite_bloc.dart';
 import 'package:level_1/home_page.dart';
 
 void main() {
-  runApp(BlocProvider(create: (_) => CartBloc(), child: MyApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<CartBloc>(create: (_) => CartBloc()),
+        BlocProvider<FavoriteBloc>(create: (_) => FavoriteBloc()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
