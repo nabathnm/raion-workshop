@@ -4,8 +4,12 @@ import 'package:level_1/features/favorites/favorite_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvents, FavoriteState> {
   FavoriteBloc() : super(FavoriteState(0)) {
-    on<addToFavorite>((event, emit) {
+    on<AddToFavorite>((event, emit) {
       emit(FavoriteState(state.totalItems + 1));
+    });
+
+    on<RemoveFromFavorite>((event, emit) {
+      emit(FavoriteState(state.totalItems - 1));
     });
   }
 }

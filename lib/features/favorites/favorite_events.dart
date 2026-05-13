@@ -1,3 +1,5 @@
 abstract class FavoriteEvents {}
 
-class addToFavorite extends FavoriteEvents {}
+class AddToFavorite extends FavoriteEvents {}
+
+class RemoveFromFavorite extends FavoriteEvents {}

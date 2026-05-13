@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
 import 'package:level_1/features/cart/cart_state.dart';
 import 'package:level_1/features/favorites/favorite_bloc.dart';
+import 'package:level_1/features/favorites/favorite_events.dart';
 import 'package:level_1/features/favorites/favorite_state.dart';
 import 'package:level_1/widgets/banner_caraousel.dart';
 import 'package:level_1/widgets/category_card.dart';
@@ -111,6 +112,11 @@ class _HomePageState extends State<HomePage> {
                     onToggleFavorite: () {
                       setState(() {
                         fav1 = !fav1;
+                        if (fav1) {
+                          context.read<FavoriteBloc>().add(AddToFavorite());
+                        } else {
+                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
+                        }
                       });
                     },
                   ),
@@ -124,6 +130,11 @@ class _HomePageState extends State<HomePage> {
                     onToggleFavorite: () {
                       setState(() {
                         fav2 = !fav2;
+                        if (fav2) {
+                          context.read<FavoriteBloc>().add(AddToFavorite());
+                        } else {
+                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
+                        }
                       });
                     },
                   ),
@@ -137,6 +148,11 @@ class _HomePageState extends State<HomePage> {
                     onToggleFavorite: () {
                       setState(() {
                         fav3 = !fav3;
+                        if (fav3) {
+                          context.read<FavoriteBloc>().add(AddToFavorite());
+                        } else {
+                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
+                        }
                       });
                     },
                   ),
@@ -150,6 +166,11 @@ class _HomePageState extends State<HomePage> {
                     onToggleFavorite: () {
                       setState(() {
                         fav4 = !fav4;
+                        if (fav4) {
+                          context.read<FavoriteBloc>().add(AddToFavorite());
+                        } else {
+                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
+                        }
                       });
                     },
                   ),

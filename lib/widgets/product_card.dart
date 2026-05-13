@@ -69,8 +69,7 @@ class ProductCard extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     onToggleFavorite();
-                    context.read<FavoriteBloc>().add(addToFavorite());
-                  },
+                  } ,
                   child: CircleAvatar(
                     radius: 16,
                     backgroundColor: Colors.white.withOpacity(0.65),
