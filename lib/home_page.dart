@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:level_1/features/cart/cart_state.dart';
 import 'package:level_1/widgets/banner_caraousel.dart';
 import 'package:level_1/widgets/category_card.dart';
 import 'package:level_1/widgets/product_card.dart';
+import 'package:level_1/widgets/statistic_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,8 +55,27 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+              BannerCarousel(),
 
-              Container(child: BannerCarousel()),
+              Row(
+                spacing: 12,
+                children: [
+                  StatisticCard(
+                    color: Colors.red.shade400,
+                    title: "Favorites",
+                    value: "12",
+                  ),
+                  BlocBuilder<CartBloc, CartState>(
+                    builder: (context, state) {
+                      return StatisticCard(
+                        color: Colors.green.shade400,
+                        title: "Cart",
+                        value: state.totalItems.toString(),
+                      );
+                    },
+                  ),
+                ],
+              ),
 
               Text(
                 'Categories',
@@ -77,8 +100,15 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              Row(
-                spacing: 20,
+              GridView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.65,
+                ),
                 children: [
                   ProductCard(
                     title: 'Berries',
@@ -106,12 +136,6 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                   ),
-                ],
-              ),
-
-              Row(
-                spacing: 20,
-                children: [
                   ProductCard(
                     title: 'Milk',
                     description: 'Lorem ipsum dolor sit a met, consectetur.',

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/detail_page.dart';
+import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:level_1/features/cart/cart_event.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
@@ -69,6 +72,25 @@ class ProductCard extends StatelessWidget {
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.red : Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  top: 8,
+                  right: 44,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<CartBloc>().add(AddToCart());
+                    },
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white.withOpacity(0.65),
+                      child: Icon(
+                        Icons.shopping_bag,
+                        color: Colors.white,
                         size: 18,
                       ),
                     ),
