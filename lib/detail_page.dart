@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:level_1/widgets/product_cart_button.dart';
+import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:level_1/features/cart/cart_event.dart';
+import 'package:level_1/features/cart/cart_state.dart';
 
 class DetailPage extends StatefulWidget {
   final String title;
@@ -141,6 +146,38 @@ class _DetailPageState extends State<DetailPage> {
                     color: Color(0xff505050),
                   ),
                 ),
+                SizedBox(height: 8),
+          Row(
+            spacing: 4,
+            children: [
+              ProductCartButton(
+                color: Colors.red.shade400,
+                name: "Remove",
+                action: () {
+                  context.read<CartBloc>().add(RemoveFromCart());
+                },
+              ),
+              ProductCartButton(
+                color: Colors.blue.shade400,
+                name: "Add Cart",
+                action: () {
+                  context.read<CartBloc>().add(AddToCart());
+                },
+              ),
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  return ProductCartButton(
+                    color: Colors.green.shade400,
+                    name: state.totalItems.toString(),
+                    action: () {
+                      context.read<CartBloc>().add(AddToCart());
+                    },
+                  );
+                }
+              ),
+            ],
+          ),
+
               ],
             ),
           ),
