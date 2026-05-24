@@ -3,16 +3,20 @@ import 'package:level_1/features/cart/cart_event.dart';
 import 'package:level_1/features/cart/cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  CartBloc() : super(CartState(0)) {
-    on<AddToCart>((event, emit) {
-      emit(CartState(state.totalItems + 1));
+  static const List<String> itemIds = ['berries', 'tulsi', 'milk', 'tomato'];
+  CartBloc() : super(const CartState()) {
+    on<AddItem>((event, emit) {
+      final updated = Map<String, int>.from(state.items);
+      updated[event.itemId] = (updated[event.itemId] ?? 0) + 1;
+      emit(state.copyWith(items: updated));
     });
-    on<RemoveFromCart>((event, emit) {
-      if (state.totalItems == 0) {
-        emit(CartState(0));
-      } else {
-        emit(CartState(state.totalItems - 1));
-      }
+
+    on<RemoveItem>((event, emit) {
+      final qty = state.items[event.itemId] ?? 0;
+      if (qty == 0) return;
+      final updated = Map<String, int>.from(state.items);
+      updated[event.itemId] = qty - 1;
+      emit(state.copyWith(items: updated));
     });
   }
 }

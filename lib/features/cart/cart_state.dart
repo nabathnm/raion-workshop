@@ -1,5 +1,11 @@
 class CartState {
-  final int totalItems;
+  final Map<String, int> items;
 
-  CartState(this.totalItems);
+  const CartState({Map<String, int>? items}) : items = items ?? const {};
+
+  int get totalItems => items.values.fold(0, (sum, qty) => sum + qty);
+
+  CartState copyWith({Map<String, int>? items}) {
+    return CartState(items: items ?? this.items);
+  }
 }

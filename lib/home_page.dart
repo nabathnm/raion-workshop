@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:level_1/features/cart/cart_event.dart';
 import 'package:level_1/features/cart/cart_state.dart';
 import 'package:level_1/features/favorites/favorite_bloc.dart';
 import 'package:level_1/features/favorites/favorite_events.dart';
@@ -19,10 +20,43 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool fav1 = false;
-  bool fav2 = false;
-  bool fav3 = false;
-  bool fav4 = false;
+  final List<Map<String, String>> products = [
+    {
+      'id': 'berries',
+      'title': 'Berries',
+      'image': 'card1.png',
+      'star': '4.5',
+      'rating': '672',
+    },
+    {
+      'id': 'tulsi',
+      'title': 'Tulsi',
+      'image': 'card2.png',
+      'star': '4.9',
+      'rating': '324',
+    },
+    {
+      'id': 'milk',
+      'title': 'Milk',
+      'image': 'card3.png',
+      'star': '4.5',
+      'rating': '672',
+    },
+    {
+      'id': 'tomato',
+      'title': 'Tomato',
+      'image': 'card4.png',
+      'star': '4.9',
+      'rating': '324',
+    },
+  ];
+
+  final Map<String, bool> favorites = {
+    'berries': false,
+    'tulsi': false,
+    'milk': false,
+    'tomato': false,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -92,89 +126,49 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              GridView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.53,
-                ),
-                children: [
-                  ProductCard(
-                    title: 'Berries',
-                    description: 'Lorem ipsum dolor sit a met, consectetur.',
-                    image: 'card1.png',
-                    star: '4.5',
-                    rating: '672',
-                    isFavorite: fav1,
-                    onToggleFavorite: () {
-                      setState(() {
-                        fav1 = !fav1;
-                        if (fav1) {
-                          context.read<FavoriteBloc>().add(AddToFavorite());
-                        } else {
-                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
-                        }
-                      });
-                    },
-                  ),
-                  ProductCard(
-                    title: 'Tulsi',
-                    description: 'Lorem ipsum dolor sit a met, consectetur.',
-                    image: 'card2.png',
-                    star: '4.9',
-                    rating: '324',
-                    isFavorite: fav2,
-                    onToggleFavorite: () {
-                      setState(() {
-                        fav2 = !fav2;
-                        if (fav2) {
-                          context.read<FavoriteBloc>().add(AddToFavorite());
-                        } else {
-                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
-                        }
-                      });
-                    },
-                  ),
-                  ProductCard(
-                    title: 'Milk',
-                    description: 'Lorem ipsum dolor sit a met, consectetur.',
-                    image: 'card3.png',
-                    star: '4.5',
-                    isFavorite: fav3,
-                    rating: '672',
-                    onToggleFavorite: () {
-                      setState(() {
-                        fav3 = !fav3;
-                        if (fav3) {
-                          context.read<FavoriteBloc>().add(AddToFavorite());
-                        } else {
-                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
-                        }
-                      });
-                    },
-                  ),
-                  ProductCard(
-                    title: 'Tomato',
-                    description: 'Lorem ipsum dolor sit a met, consectetur.',
-                    image: 'card4.png',
-                    star: '4.9',
-                    rating: '324',
-                    isFavorite: fav4,
-                    onToggleFavorite: () {
-                      setState(() {
-                        fav4 = !fav4;
-                        if (fav4) {
-                          context.read<FavoriteBloc>().add(AddToFavorite());
-                        } else {
-                          context.read<FavoriteBloc>().add(RemoveFromFavorite());
-                        }
-                      });
-                    },
-                  ),
-                ],
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, cartState) {
+                  return GridView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.53,
+                        ),
+                    children: products.map((product) {
+                      final id = product['id']!;
+                      final qty = cartState.items[id] ?? 0;
+
+                      return ProductCard(
+                        title: product['title']!,
+                        description: 'Lorem ipsum dolor sit amet, consectetur.',
+                        image: product['image']!,
+                        star: product['star']!,
+                        rating: product['rating']!,
+                        quantity: qty,
+                        isFavorite: favorites[id] ?? false,
+                        onToggleFavorite: () {
+                          setState(() {
+                            favorites[id] = !(favorites[id] ?? false);
+                            if (favorites[id]!) {
+                              context.read<FavoriteBloc>().add(AddToFavorite());
+                            } else {
+                              context.read<FavoriteBloc>().add(
+                                RemoveFromFavorite(),
+                              );
+                            }
+                          });
+                        },
+                        onAdd: () => context.read<CartBloc>().add(AddItem(id)),
+                        onRemove: () =>
+                            context.read<CartBloc>().add(RemoveItem(id)),
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ],
           ),

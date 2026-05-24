@@ -147,37 +147,44 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ),
                 SizedBox(height: 8),
-          Row(
-            spacing: 4,
-            children: [
-              ProductCartButton(
-                color: Colors.red.shade400,
-                name: "Remove",
-                action: () {
-                  context.read<CartBloc>().add(RemoveFromCart());
-                },
-              ),
-              ProductCartButton(
-                color: Colors.blue.shade400,
-                name: "Add Cart",
-                action: () {
-                  context.read<CartBloc>().add(AddToCart());
-                },
-              ),
-              BlocBuilder<CartBloc, CartState>(
-                builder: (context, state) {
-                  return ProductCartButton(
-                    color: Colors.green.shade400,
-                    name: state.totalItems.toString(),
-                    action: () {
-                      context.read<CartBloc>().add(AddToCart());
-                    },
-                  );
-                }
-              ),
-            ],
-          ),
-
+                Row(
+                  spacing: 4,
+                  children: [
+                    ProductCartButton(
+                      color: Colors.red.shade400,
+                      name: "Remove",
+                      action: () {
+                        context.read<CartBloc>().add(
+                          RemoveItem(widget.title.toLowerCase()),
+                        );
+                      },
+                    ),
+                    ProductCartButton(
+                      color: Colors.blue.shade400,
+                      name: "Add Cart",
+                      action: () {
+                        context.read<CartBloc>().add(
+                          AddItem(widget.title.toLowerCase()),
+                        );
+                      },
+                    ),
+                    BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        final qty =
+                            state.items[widget.title.toLowerCase()] ?? 0;
+                        return ProductCartButton(
+                          color: Colors.green.shade400,
+                          name: qty.toString(),
+                          action: () {
+                            context.read<CartBloc>().add(
+                              AddItem(widget.title.toLowerCase()),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:level_1/detail_page.dart';
-import 'package:level_1/features/cart/cart_bloc.dart';
-import 'package:level_1/features/cart/cart_event.dart';
-import 'package:level_1/features/favorites/favorite_bloc.dart';
-import 'package:level_1/features/favorites/favorite_events.dart';
 import 'package:level_1/widgets/product_cart_button.dart';
 
 class ProductCard extends StatelessWidget {
@@ -14,7 +9,10 @@ class ProductCard extends StatelessWidget {
   final String star;
   final String rating;
   final bool isFavorite;
+  final int quantity;
   final VoidCallback onToggleFavorite;
+  final VoidCallback onAdd;
+  final VoidCallback onRemove;
 
   const ProductCard({
     super.key,
@@ -24,7 +22,10 @@ class ProductCard extends StatelessWidget {
     required this.star,
     required this.rating,
     required this.isFavorite,
+    required this.quantity,
     required this.onToggleFavorite,
+    required this.onAdd,
+    required this.onRemove,
   });
 
   @override
@@ -69,7 +70,7 @@ class ProductCard extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     onToggleFavorite();
-                  } ,
+                  },
                   child: CircleAvatar(
                     radius: 16,
                     backgroundColor: Colors.white.withOpacity(0.65),
@@ -91,16 +92,12 @@ class ProductCard extends StatelessWidget {
               ProductCartButton(
                 color: Colors.red.shade400,
                 name: "Remove",
-                action: () {
-                  context.read<CartBloc>().add(RemoveFromCart());
-                },
+                action: onRemove,
               ),
               ProductCartButton(
                 color: Colors.blue.shade400,
                 name: "Add Cart",
-                action: () {
-                  context.read<CartBloc>().add(AddToCart());
-                },
+                action: onAdd,
               ),
             ],
           ),

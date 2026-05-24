@@ -1,5 +1,11 @@
 abstract class CartEvent {}
 
-class AddToCart extends CartEvent {}
+class AddItem extends CartEvent {
+  final String itemId;
+  AddItem(this.itemId);
+}
 
-class RemoveFromCart extends CartEvent {}
+class RemoveItem extends CartEvent {
+  final String itemId;
+  RemoveItem(this.itemId);
+}
