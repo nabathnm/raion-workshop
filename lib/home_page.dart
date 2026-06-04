@@ -11,6 +11,8 @@ import 'package:level_1/widgets/category_card.dart';
 import 'package:level_1/widgets/product_card.dart';
 import 'package:level_1/widgets/search_product_bar.dart';
 import 'package:level_1/widgets/statistic_card.dart';
+import 'package:provider/provider.dart';
+import 'package:level_1/providers/product_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +22,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().fetchProducts();
+    });
+  }
+
   final List<Map<String, String>> products = [
     {
       'id': 'berries',

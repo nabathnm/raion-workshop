@@ -4,15 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:level_1/features/cart/cart_bloc.dart';
 import 'package:level_1/features/favorites/favorite_bloc.dart';
 import 'package:level_1/home_page.dart';
+import 'package:level_1/providers/product_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<CartBloc>(create: (_) => CartBloc()),
-        BlocProvider<FavoriteBloc>(create: (_) => FavoriteBloc()),
-      ],
-      child: MyApp(),
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => ProductProvider())],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<CartBloc>(create: (_) => CartBloc()),
+          BlocProvider<FavoriteBloc>(create: (_) => FavoriteBloc()),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
