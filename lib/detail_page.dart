@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:level_1/widgets/product_cart_button.dart';
-import 'package:level_1/features/cart/cart_bloc.dart';
+import 'package:workshop/widgets/product_cart_button.dart';
+import 'package:workshop/features/cart/cart_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:level_1/features/cart/cart_event.dart';
-import 'package:level_1/features/cart/cart_state.dart';
+import 'package:workshop/features/cart/cart_event.dart';
+import 'package:workshop/features/cart/cart_state.dart';
 
 class DetailPage extends StatefulWidget {
   final String title;

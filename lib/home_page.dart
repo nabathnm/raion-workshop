@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:level_1/features/cart/cart_bloc.dart';
-import 'package:level_1/features/cart/cart_event.dart';
-import 'package:level_1/features/cart/cart_state.dart';
-import 'package:level_1/features/favorites/favorite_bloc.dart';
-import 'package:level_1/features/favorites/favorite_events.dart';
-import 'package:level_1/features/favorites/favorite_state.dart';
-import 'package:level_1/widgets/banner_caraousel.dart';
-import 'package:level_1/widgets/category_card.dart';
-import 'package:level_1/widgets/product_card.dart';
-import 'package:level_1/widgets/search_product_bar.dart';
-import 'package:level_1/widgets/statistic_card.dart';
+import 'package:workshop/features/cart/cart_bloc.dart';
+import 'package:workshop/features/cart/cart_event.dart';
+import 'package:workshop/features/cart/cart_state.dart';
+import 'package:workshop/features/favorites/favorite_bloc.dart';
+import 'package:workshop/features/favorites/favorite_state.dart';
+import 'package:workshop/widgets/banner_caraousel.dart';
+import 'package:workshop/widgets/category_card.dart';
+import 'package:workshop/widgets/fake_store_product_card.dart';
+import 'package:workshop/widgets/search_product_bar.dart';
+import 'package:workshop/widgets/statistic_card.dart';
 import 'package:provider/provider.dart';
-import 'package:level_1/providers/product_provider.dart';
+import 'package:workshop/providers/product_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,44 +29,6 @@ class _HomePageState extends State<HomePage> {
       context.read<ProductProvider>().fetchProducts();
     });
   }
-
-  final List<Map<String, String>> products = [
-    {
-      'id': 'berries',
-      'title': 'Berries',
-      'image': 'card1.png',
-      'star': '4.5',
-      'rating': '672',
-    },
-    {
-      'id': 'tulsi',
-      'title': 'Tulsi',
-      'image': 'card2.png',
-      'star': '4.9',
-      'rating': '324',
-    },
-    {
-      'id': 'milk',
-      'title': 'Milk',
-      'image': 'card3.png',
-      'star': '4.5',
-      'rating': '672',
-    },
-    {
-      'id': 'tomato',
-      'title': 'Tomato',
-      'image': 'card4.png',
-      'star': '4.9',
-      'rating': '324',
-    },
-  ];
-
-  final Map<String, bool> favorites = {
-    'berries': false,
-    'tulsi': false,
-    'milk': false,
-    'tomato': false,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +75,18 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
 
+              Container(
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.amber,
+                ),
+                child: Text(
+                  "Status: Terhubung dengan internet, Mode Offline, tidak terhubung",
+                ),
+              ),
+
               Text(
                 'Categories',
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
@@ -137,8 +110,16 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              BlocBuilder<CartBloc, CartState>(
-                builder: (context, cartState) {
+              Consumer<ProductProvider>(
+                builder: (context, productProvider, child) {
+                  if (productProvider.status == FetchStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (productProvider.status == FetchStatus.error) {
+                    return Center(child: Text(productProvider.errorMessage));
+                  }
+
                   return GridView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -147,35 +128,23 @@ class _HomePageState extends State<HomePage> {
                           crossAxisCount: 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
-                          childAspectRatio: 0.53,
+                          childAspectRatio: 0.57,
                         ),
-                    children: products.map((product) {
-                      final id = product['id']!;
-                      final qty = cartState.items[id] ?? 0;
+                    children: productProvider.products.map((product) {
+                      final id = product.id.toString();
 
-                      return ProductCard(
-                        title: product['title']!,
-                        description: 'Lorem ipsum dolor sit amet, consectetur.',
-                        image: product['image']!,
-                        star: product['star']!,
-                        rating: product['rating']!,
-                        quantity: qty,
-                        isFavorite: favorites[id] ?? false,
-                        onToggleFavorite: () {
-                          setState(() {
-                            favorites[id] = !(favorites[id] ?? false);
-                            if (favorites[id]!) {
-                              context.read<FavoriteBloc>().add(AddToFavorite());
-                            } else {
-                              context.read<FavoriteBloc>().add(
-                                RemoveFromFavorite(),
-                              );
-                            }
-                          });
+                      return FakeStoreProductCard(
+                        id: product.id,
+                        title: product.title,
+                        price: product.price,
+                        category: product.category,
+                        image: product.image,
+                        onAdd: () {
+                          context.read<CartBloc>().add(AddItem(id));
                         },
-                        onAdd: () => context.read<CartBloc>().add(AddItem(id)),
-                        onRemove: () =>
-                            context.read<CartBloc>().add(RemoveItem(id)),
+                        onRemove: () {
+                          context.read<CartBloc>().add(RemoveItem(id));
+                        },
                       );
                     }).toList(),
                   );

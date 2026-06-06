@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:level_1/models/product_model.dart';
+import 'package:workshop/models/product_model.dart';
 
 class ApiService {
   late final Dio _dio;

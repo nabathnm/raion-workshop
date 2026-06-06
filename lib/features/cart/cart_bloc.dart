@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:level_1/features/cart/cart_event.dart';
-import 'package:level_1/features/cart/cart_state.dart';
+import 'package:workshop/features/cart/cart_event.dart';
+import 'package:workshop/features/cart/cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   static const List<String> itemIds = ['berries', 'tulsi', 'milk', 'tomato'];
