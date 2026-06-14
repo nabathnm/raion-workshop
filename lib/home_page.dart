@@ -7,6 +7,7 @@ import 'package:workshop/features/favorites/favorite_bloc.dart';
 import 'package:workshop/features/favorites/favorite_state.dart';
 import 'package:workshop/widgets/banner_caraousel.dart';
 import 'package:workshop/widgets/category_card.dart';
+import 'package:workshop/widgets/category_cips.dart';
 import 'package:workshop/widgets/fake_store_product_card.dart';
 import 'package:workshop/widgets/search_product_bar.dart';
 import 'package:workshop/widgets/statistic_card.dart';
@@ -75,16 +76,59 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
 
-              Container(
-                width: double.infinity,
-                height: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.amber,
-                ),
-                child: Text(
-                  "Status: Terhubung dengan internet, Mode Offline, tidak terhubung",
-                ),
+              Consumer<ProductProvider>(
+                builder: (context, provider, child) {
+                  Color bannerColor;
+                  IconData bannerIcon;
+                  String message;
+
+                  if (provider.isOffline) {
+                    // Keadaan offline (connectionError)
+                    bannerColor = Colors.red.shade600;
+                    bannerIcon = Icons.wifi_off_rounded;
+                    message = provider.statusMessage.isNotEmpty
+                        ? provider.statusMessage
+                        : "Koneksi terputus. Mode Offline.";
+                  } else if (provider.statusMessage.isNotEmpty) {
+                    // Keadaan timeout atau error dio lainnya yang memiliki pesan
+                    bannerColor = Colors.orange.shade700;
+                    bannerIcon = Icons.warning_amber_rounded;
+                    message = provider.statusMessage;
+                  } else {
+                    // Keadaan online dan terhubung normal
+                    bannerColor = Colors.green.shade600;
+                    bannerIcon = Icons.wifi_rounded;
+                    message = "Jaringan terhubung. Mode Online.";
+                  }
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: bannerColor,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(bannerIcon, color: Colors.white, size: 20),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            message,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
 
               Text(
@@ -92,18 +136,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              SingleChildScrollView(
-                scrollDirection: .horizontal,
-                child: Row(
-                  spacing: 10,
-                  children: [
-                    CategoryCard(title: 'Fruits', image: 'c1.png'),
-                    CategoryCard(title: 'Grains', image: 'c2.png'),
-                    CategoryCard(title: 'Herbs', image: 'c3.png'),
-                    CategoryCard(title: 'Vegetables', image: 'c1.png'),
-                  ],
-                ),
-              ),
+              CategoryCips(),
 
               Text(
                 'Browse Products',

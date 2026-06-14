@@ -1,4 +1,4 @@
-# level_1
+# workshop
 
 A new Flutter project.
 

@@ -4,6 +4,9 @@ import 'package:workshop/features/cart/cart_bloc.dart';
 import 'package:workshop/features/cart/cart_event.dart';
 import 'package:workshop/features/cart/cart_state.dart';
 import 'package:workshop/widgets/product_cart_button.dart';
+import 'package:workshop/features/favorites/favorite_bloc.dart';
+import 'package:workshop/features/favorites/favorite_events.dart';
+import 'package:workshop/features/favorites/favorite_state.dart';
 
 class FakeStoreDetailPage extends StatelessWidget {
   final int id;
@@ -51,6 +54,49 @@ class FakeStoreDetailPage extends StatelessWidget {
                   child: IconButton(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.arrow_back),
+                  ),
+                ),
+
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                    builder: (context, state) {
+                      final isFavorite = state.items.containsKey(productId);
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(8),
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : Colors.grey,
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            if (isFavorite) {
+                              context.read<FavoriteBloc>().add(
+                                RemoveFromFavorite(productId),
+                              );
+                            } else {
+                              context.read<FavoriteBloc>().add(
+                                AddToFavorite(productId),
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

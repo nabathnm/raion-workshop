@@ -12,13 +12,13 @@ class ProductProvider extends ChangeNotifier {
   List<ProductModel> _products = [];
   String _errorMessage = '';
   bool _isOffline = false;
-  String _offlineMessage = '';
+  String _statusMessage = '';
 
   FetchStatus get status => _status;
   List<ProductModel> get products => _products;
   String get errorMessage => _errorMessage;
   bool get isOffline => _isOffline;
-  String get offlineMessage => _offlineMessage;
+  String get statusMessage => _statusMessage;
 
   Future<void> fetchProducts() async {
     _status = FetchStatus.loading;
@@ -26,22 +26,24 @@ class ProductProvider extends ChangeNotifier {
 
     try {
       _products = await _apiService.getProducts();
+      _isOffline = false;
+      _statusMessage = '';
       _status = FetchStatus.success;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
-        _isOffline = true;
-        _offlineMessage = e.type == DioExceptionType.connectionError
-            ? 'Koneksi terputus. Memperlihatkan produk offline.'
-            : 'Koneksi lambat. Waktu permintaan habis.';
+        _isOffline = e.type == DioExceptionType.connectionError;
+        _statusMessage = e.type == DioExceptionType.connectionError
+            ? 'Koneksi terputus.'
+            : 'Koneksi lambat.';
       }
 
       if (_products.isNotEmpty) {
         _status = FetchStatus.success;
       } else {
         _status = FetchStatus.error;
-        _errorMessage = 'Tidak ada koneksi internet untuk memuat produk.';
+        _errorMessage = 'Tidak ada koneksi internet untuk menampilkan produk.';
       }
     }
 
