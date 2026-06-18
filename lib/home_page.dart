@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:level_1/features/cart/cart_bloc.dart';
-import 'package:level_1/features/cart/cart_event.dart';
-import 'package:level_1/features/cart/cart_state.dart';
-import 'package:level_1/features/favorites/favorite_bloc.dart';
-import 'package:level_1/features/favorites/favorite_events.dart';
-import 'package:level_1/features/favorites/favorite_state.dart';
-import 'package:level_1/widgets/banner_caraousel.dart';
-import 'package:level_1/widgets/category_card.dart';
-import 'package:level_1/widgets/product_card.dart';
-import 'package:level_1/widgets/search_product_bar.dart';
-import 'package:level_1/widgets/statistic_card.dart';
+import 'package:workshop/features/cart/cart_bloc.dart';
+import 'package:workshop/features/cart/cart_event.dart';
+import 'package:workshop/features/cart/cart_state.dart';
+import 'package:workshop/features/favorites/favorite_bloc.dart';
+import 'package:workshop/features/favorites/favorite_state.dart';
+import 'package:workshop/widgets/banner_caraousel.dart';
+import 'package:workshop/widgets/category_card.dart';
+import 'package:workshop/widgets/category_cips.dart';
+import 'package:workshop/widgets/fake_store_product_card.dart';
+import 'package:workshop/widgets/search_product_bar.dart';
+import 'package:workshop/widgets/statistic_card.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop/providers/product_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,43 +22,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Map<String, String>> products = [
-    {
-      'id': 'berries',
-      'title': 'Berries',
-      'image': 'card1.png',
-      'star': '4.5',
-      'rating': '672',
-    },
-    {
-      'id': 'tulsi',
-      'title': 'Tulsi',
-      'image': 'card2.png',
-      'star': '4.9',
-      'rating': '324',
-    },
-    {
-      'id': 'milk',
-      'title': 'Milk',
-      'image': 'card3.png',
-      'star': '4.5',
-      'rating': '672',
-    },
-    {
-      'id': 'tomato',
-      'title': 'Tomato',
-      'image': 'card4.png',
-      'star': '4.9',
-      'rating': '324',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
 
-  final Map<String, bool> favorites = {
-    'berries': false,
-    'tulsi': false,
-    'milk': false,
-    'tomato': false,
-  };
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().fetchProducts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,31 +76,83 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
 
+              Consumer<ProductProvider>(
+                builder: (context, provider, child) {
+                  Color bannerColor;
+                  IconData bannerIcon;
+                  String message;
+
+                  if (provider.isOffline) {
+                    // Keadaan offline (connectionError)
+                    bannerColor = Colors.red.shade600;
+                    bannerIcon = Icons.wifi_off_rounded;
+                    message = provider.statusMessage.isNotEmpty
+                        ? provider.statusMessage
+                        : "Koneksi terputus. Mode Offline.";
+                  } else if (provider.statusMessage.isNotEmpty) {
+                    // Keadaan timeout atau error dio lainnya yang memiliki pesan
+                    bannerColor = Colors.orange.shade700;
+                    bannerIcon = Icons.warning_amber_rounded;
+                    message = provider.statusMessage;
+                  } else {
+                    // Keadaan online dan terhubung normal
+                    bannerColor = Colors.green.shade600;
+                    bannerIcon = Icons.wifi_rounded;
+                    message = "Jaringan terhubung. Mode Online.";
+                  }
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: bannerColor,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(bannerIcon, color: Colors.white, size: 20),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            message,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
               Text(
                 'Categories',
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              SingleChildScrollView(
-                scrollDirection: .horizontal,
-                child: Row(
-                  spacing: 10,
-                  children: [
-                    CategoryCard(title: 'Fruits', image: 'c1.png'),
-                    CategoryCard(title: 'Grains', image: 'c2.png'),
-                    CategoryCard(title: 'Herbs', image: 'c3.png'),
-                    CategoryCard(title: 'Vegetables', image: 'c1.png'),
-                  ],
-                ),
-              ),
+              CategoryCips(),
 
               Text(
                 'Browse Products',
                 style: TextStyle(fontWeight: .w700, fontSize: 16),
               ),
 
-              BlocBuilder<CartBloc, CartState>(
-                builder: (context, cartState) {
+              Consumer<ProductProvider>(
+                builder: (context, productProvider, child) {
+                  if (productProvider.status == FetchStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (productProvider.status == FetchStatus.error) {
+                    return Center(child: Text(productProvider.errorMessage));
+                  }
+
                   return GridView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -136,35 +161,23 @@ class _HomePageState extends State<HomePage> {
                           crossAxisCount: 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
-                          childAspectRatio: 0.53,
+                          childAspectRatio: 0.57,
                         ),
-                    children: products.map((product) {
-                      final id = product['id']!;
-                      final qty = cartState.items[id] ?? 0;
+                    children: productProvider.products.map((product) {
+                      final id = product.id.toString();
 
-                      return ProductCard(
-                        title: product['title']!,
-                        description: 'Lorem ipsum dolor sit amet, consectetur.',
-                        image: product['image']!,
-                        star: product['star']!,
-                        rating: product['rating']!,
-                        quantity: qty,
-                        isFavorite: favorites[id] ?? false,
-                        onToggleFavorite: () {
-                          setState(() {
-                            favorites[id] = !(favorites[id] ?? false);
-                            if (favorites[id]!) {
-                              context.read<FavoriteBloc>().add(AddToFavorite());
-                            } else {
-                              context.read<FavoriteBloc>().add(
-                                RemoveFromFavorite(),
-                              );
-                            }
-                          });
+                      return FakeStoreProductCard(
+                        id: product.id,
+                        title: product.title,
+                        price: product.price,
+                        category: product.category,
+                        image: product.image,
+                        onAdd: () {
+                          context.read<CartBloc>().add(AddItem(id));
                         },
-                        onAdd: () => context.read<CartBloc>().add(AddItem(id)),
-                        onRemove: () =>
-                            context.read<CartBloc>().add(RemoveItem(id)),
+                        onRemove: () {
+                          context.read<CartBloc>().add(RemoveItem(id));
+                        },
                       );
                     }).toList(),
                   );

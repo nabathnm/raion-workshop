@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:level_1/detail_page.dart';
-import 'package:level_1/widgets/product_cart_button.dart';
+import 'package:workshop/detail_page.dart';
+import 'package:workshop/widgets/product_cart_button.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
