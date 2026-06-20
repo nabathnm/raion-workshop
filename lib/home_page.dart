@@ -83,22 +83,17 @@ class _HomePageState extends State<HomePage> {
                   String message;
 
                   if (provider.isOffline) {
-                    // Keadaan offline (connectionError)
                     bannerColor = Colors.red.shade600;
                     bannerIcon = Icons.wifi_off_rounded;
-                    message = provider.statusMessage.isNotEmpty
-                        ? provider.statusMessage
-                        : "Koneksi terputus. Mode Offline.";
-                  } else if (provider.statusMessage.isNotEmpty) {
-                    // Keadaan timeout atau error dio lainnya yang memiliki pesan
+                    message = provider.statusMessage;
+                  } else if (provider.statusMessage == 'Koneksi lambat.') {
                     bannerColor = Colors.orange.shade700;
                     bannerIcon = Icons.warning_amber_rounded;
                     message = provider.statusMessage;
                   } else {
-                    // Keadaan online dan terhubung normal
                     bannerColor = Colors.green.shade600;
                     bannerIcon = Icons.wifi_rounded;
-                    message = "Jaringan terhubung. Mode Online.";
+                    message = provider.statusMessage;
                   }
 
                   return Container(

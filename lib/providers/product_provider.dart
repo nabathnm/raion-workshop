@@ -18,7 +18,7 @@ class ProductProvider extends ChangeNotifier {
     ) {
       if (results.contains(ConnectivityResult.none)) {
         _isOffline = true;
-        _statusMessage = 'Jaringan terputus. Mode Offline';
+        _statusMessage = 'Koneksi terputus. Mode Offline';
         notifyListeners();
       } else {
         if (_isOffline) {
@@ -56,7 +56,7 @@ class ProductProvider extends ChangeNotifier {
     try {
       _products = await _apiService.getProducts();
       _isOffline = false;
-      _statusMessage = '';
+      _statusMessage = 'Koneksi terhubung. Mode Online';
       _status = FetchStatus.success;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
