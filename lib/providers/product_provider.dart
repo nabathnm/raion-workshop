@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:workshop/models/product_model.dart';
 import 'package:workshop/services/api_services.dart';
 
@@ -7,6 +9,33 @@ enum FetchStatus { loading, success, error }
 
 class ProductProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
+  late final StreamSubscription<List<ConnectivityResult>>
+  _connectivitySubscription;
+
+  ProductProvider() {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+      List<ConnectivityResult> results,
+    ) {
+      if (results.contains(ConnectivityResult.none)) {
+        _isOffline = true;
+        _statusMessage = 'Jaringan terputus. Mode Offline';
+        notifyListeners();
+      } else {
+        if (_isOffline) {
+          _isOffline = false;
+          _statusMessage = '';
+          notifyListeners();
+          fetchProducts();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
 
   FetchStatus _status = FetchStatus.loading;
   List<ProductModel> _products = [];

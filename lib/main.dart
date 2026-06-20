@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ProductProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider(), lazy: false),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<CartBloc>(create: (_) => CartBloc()),
